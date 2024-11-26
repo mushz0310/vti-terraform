@@ -1,8 +1,8 @@
 # VPC
 resource "aws_vpc" "this" {
   cidr_block           = "10.0.0.0/16"
-  enable_dns_support   = true
-  enable_dns_hostnames = true
+  enable_dns_support   = false
+  enable_dns_hostnames = false
 
   tags = {
     Name = "${var.name_prefix}-vpc"
@@ -139,9 +139,10 @@ resource "aws_key_pair" "key_pair" {
   public_key = tls_private_key.key.public_key_openssh
 }
 
+
 # EC2 Instances
 resource "aws_instance" "public_ec2_01" {
-  ami             = var.ec2_ami
+  ami             = data.aws_ami.ubuntu
   instance_type   = var.ec2_instance_type
   subnet_id       = aws_subnet.public_subnet.id
   security_groups = [aws_security_group.public_sg.name]
@@ -153,7 +154,7 @@ resource "aws_instance" "public_ec2_01" {
 }
 
 resource "aws_instance" "private_ec2_01" {
-  ami             = var.ec2_ami
+  ami             = data.aws_ami.ubuntu
   instance_type   = var.ec2_instance_type
   subnet_id       = aws_subnet.private_subnet.id
   security_groups = [aws_security_group.private_sg.name]
